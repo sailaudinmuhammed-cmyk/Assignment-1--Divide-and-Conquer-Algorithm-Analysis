@@ -29,14 +29,13 @@ public class MergeSorter {
     }
 
     private void merge(int[] arr, int lo, int mid, int hi) {
-        // копируем текущий рабочий диапазон в aux
         for (int k = lo; k <= hi; k++) {
             aux[k] = arr[k];
         }
 
-        int l = lo;        // указатель на левую половину [lo..mid]
-        int r = mid + 1;   // указатель на правую половину [mid+1..hi]
-        int i = lo;        // указатель записи в arr
+        int l = lo;
+        int r = mid + 1;
+        int i = lo;
 
         while (l <= mid && r <= hi) {
             comparisons++;

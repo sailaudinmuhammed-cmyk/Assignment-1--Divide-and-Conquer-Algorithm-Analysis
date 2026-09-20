@@ -1,55 +1,86 @@
+import java.util.Random;
+
 public class QuickSorter {
-    void sort(int[] arr){
-        int lebght = arr.length;
-        if (lebght <= 1) return;
+    private long comparisons;
+    private long swaps;
+    private int maxDepth;
+    private static final int CUTOFF = 10;
+    private final Random random = new Random();
 
-        int middle = lebght/2;
-        int[] leftArr = new int[middle];
-        int[] rightArr = new int[lebght-middle];
-
-        int i = 0;
-        int j = 0;
-
-        for (; i <lebght; i++){
-            if(i<middle){
-                leftArr[i] = arr[i];
-            }
-            else{
-                rightArr[j] = arr[i];
-                j++;
-            }
-        }
-        sort(leftArr);
-        sort(rightArr);
-        merge(leftArr, rightArr, arr);
+    public void sort(int[] arr) {
+        comparisons = 0;
+        swaps = 0;
+        maxDepth = 0;
+        sortHelper(arr, 0, arr.length - 1, 0);
     }
 
-    void merge(int[] leftArr, int[] rightArr, int[] arr){
-        int leftSize = arr.length/2;
-        int rightSize = arr.length-leftSize;
-        int i = 0, l =0, r =0;
+    public long getComparisons() { return comparisons; }
+    public long getSwaps() { return swaps; }
+    public int getMaxDepth() { return maxDepth; }
 
-        while(l<leftSize && r<rightSize){
-            if(leftArr[l] < rightArr[r]){
-                arr[i] = leftArr[l];
-                i++;
-                l++;
+    private void sortHelper(int[] arr, int lo, int hi, int depth) {
+        while (lo < hi) {
+            maxDepth = Math.max(maxDepth, depth);
+
+            if (hi - lo + 1 <= CUTOFF) {
+                insertionSort(arr, lo, hi);
+                return;
             }
-            else{
-                arr[i] = rightArr[r];
+
+            int p = partition(arr, lo, hi);
+
+
+            int leftSize = p - lo;
+            int rightSize = hi - p - 1;
+
+            if (leftSize < rightSize) {
+                sortHelper(arr, lo, p - 1, depth + 1);
+                lo = p + 1;
+            } else {
+                sortHelper(arr, p + 1, hi, depth + 1);
+                hi = p - 1;
+            }
+            depth++;
+        }
+    }
+
+    private int partition(int[] arr, int lo, int hi) {
+        // рандомный пивот: выбираем случайный индекс и переносим его в конец
+        int pivotIndex = lo + random.nextInt(hi - lo + 1);
+        swap(arr, pivotIndex, hi);
+        int pivot = arr[hi];
+
+        int i = lo - 1;
+
+        for (int j = lo; j < hi; j++) {
+            comparisons++;
+            if (arr[j] < pivot) {
                 i++;
-                r++;
+                swap(arr, i, j);
             }
         }
-        while (l<leftSize){
-            arr[i] = leftArr[l];
-            i++;
-            l++;
-        }
-        while(r<rightSize){
-            arr[i] = rightArr[r];
-            i++;
-            r++;
+        swap(arr, i + 1, hi);
+        return i + 1;
+    }
+
+    private void swap(int[] arr, int a, int b) {
+        if (a == b) return;
+        int temp = arr[a];
+        arr[a] = arr[b];
+        arr[b] = temp;
+        swaps++;
+    }
+
+    private void insertionSort(int[] arr, int lo, int hi) {
+        for (int i = lo + 1; i <= hi; i++) {
+            int key = arr[i];
+            int j = i - 1;
+            while (j >= lo && arr[j] > key) {
+                comparisons++;
+                arr[j + 1] = arr[j];
+                j--;
+            }
+            arr[j + 1] = key;
         }
     }
 }
