@@ -4,6 +4,10 @@ public class MergeSorter {
     private int maxDepth;
     private static final int CUTOFF = 10;
 
+    MergeSorter(){
+
+    }
+
     public void sort(int[] arr) {
         aux = new int[arr.length];
         comparisons = 0;
