@@ -41,5 +41,15 @@ public class QuickSorter {
                 r++;
             }
         }
+        while (l<leftSize){
+            arr[i] = leftArr[l];
+            i++;
+            l++;
+        }
+        while(r<rightSize){
+            arr[i] = rightArr[r];
+            i++;
+            r++;
+        }
     }
 }
